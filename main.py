@@ -74,10 +74,10 @@ df_prefs = df3[flag].reset_index(drop=True)
 
 df_prefs.drop("市区町村名", axis=1, inplace=True)
 
-df_prefs.to_csv(pathlib.Path("data", "prefs.csv"), encoding="utf_8_sig")
+df_prefs.to_csv(pathlib.Path("data", "prefs.csv"), index=False, encoding="utf_8_sig")
 
 # 市区町村
 
 df_cities = df3[~flag].reset_index(drop=True)
 
-df_cities.to_csv(pathlib.Path("data", "cities.csv"), encoding="utf_8_sig")
+df_cities.to_csv(pathlib.Path("data", "cities.csv"), index=False, encoding="utf_8_sig")
