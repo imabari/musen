@@ -1,12 +1,13 @@
 import csv
 import datetime
-import urllib.parse
 import pathlib
+import time
+import urllib.parse
 
 import pandas as pd
 import requests
 
-d = {
+api = {
     # 1:免許情報検索  2: 登録情報検索
     "ST": 1,
     # 詳細情報付加 0:なし 1:あり
@@ -20,64 +21,100 @@ d = {
     # 無線局の種別
     "OW": "FB_H",
     # 所轄総合通信局
-    "IT": "E",
+    "IT": "A",
     # 免許人名称/登録人名称
     "NA": "楽天モバイル",
 }
 
-parm = urllib.parse.urlencode(d, encoding="shift-jis")
 
-r = requests.get("https://www.tele.soumu.go.jp/musen/list", parm)
-r.raise_for_status()
+musen = [
+    {"auth": "01_hokkaido", "value": "J"},
+    {"auth": "02_tohoku", "value": "I"},
+    {"auth": "03_kanto", "value": "A"},
+    {"auth": "04_shinetsu", "value": "B"},
+    {"auth": "05_hokuriku", "value": "C"},
+    {"auth": "06_tokai", "value": "D"},
+    {"auth": "07_kinki", "value": "E"},
+    {"auth": "08_chugoku", "value": "F"},
+    {"auth": "09_shikoku", "value": "G"},
+    {"auth": "10_kyushu", "value": "H"},
+    {"auth": "11_okinawa", "value": "O"},
+]
 
-cr = csv.reader(r.text.splitlines(), delimiter=",")
-data = list(cr)
 
-# 更新日
-update = datetime.datetime.strptime(data[0][0], "%Y-%m-%d").date()
+def fetch_api(parm, auth):
 
-# データラングリング
+    r = requests.get("https://www.tele.soumu.go.jp/musen/list", parm)
+    r.raise_for_status()
 
-df0 = pd.DataFrame(data[1:]).dropna(how="all")
+    cr = csv.reader(r.text.splitlines(), delimiter=",")
+    data = list(cr)
 
-df1 = df0[25].str.strip().str.split(r"\\n", 2, expand=True)
+    # 更新日
+    update = datetime.datetime.strptime(data[0][0], "%Y-%m-%d").date()
 
-se = df1.loc[df1[0].str.contains("携帯電話（その他基地局等"), 2]
+    # データラングリング
 
-df2 = (
-    se.str.strip()
-    .str.replace(r"\\n", "")
-    .str.extractall("(.+?)\(([0-9,]+?)\)")
-    .rename(columns={0: "市区町村名", 1: "開設局数"})
-    .reset_index(drop=True)
-)
+    df0 = pd.DataFrame(data[1:]).dropna(how="all")
 
-df2["市区町村名"] = df2["市区町村名"].str.strip()
+    df1 = df0[25].str.strip().str.split(r"\\n", 2, expand=True)
 
-df2["開設局数"] = df2["開設局数"].str.strip().str.replace(",", "").astype(int)
+    se = df1.loc[df1[0].str.contains("携帯電話（その他基地局等"), 2]
 
-flag = df2["市区町村名"].str.endswith(("都", "道", "府", "県"))
+    df2 = (
+        se.str.strip()
+        .str.replace(r"\\n", "")
+        .str.extractall("(.+?)\(([0-9,]+?)\)")
+        .rename(columns={0: "市区町村名", 1: "開設局数"})
+        .reset_index(drop=True)
+    )
 
-df2["都道府県名"] = df2["市区町村名"].where(flag).fillna(method="ffill")
+    df2["市区町村名"] = df2["市区町村名"].str.strip()
 
-df2["更新日"] = update.isoformat()
+    df2["開設局数"] = df2["開設局数"].str.strip().str.replace(",", "").astype(int)
 
-df3 = df2.reindex(["都道府県名", "市区町村名", "開設局数", "更新日"], axis=1)
+    # 都道府県を抽出
+    flag = df2["市区町村名"].str.endswith(("都", "道", "府", "県"))
 
-# ディレクトリ作成
+    # 都道府県に移動
+    df2["都道府県名"] = df2["市区町村名"].where(flag).fillna(method="ffill")
 
-pathlib.Path("data").mkdir(parents=True, exist_ok=True)
+    df2["更新日"] = update.isoformat()
 
-# 都道府県
+    # 列名並び替え
+    df3 = df2.reindex(["都道府県名", "市区町村名", "開設局数", "更新日"], axis=1)
 
-df_prefs = df3[flag].reset_index(drop=True)
+    # 都道府県
 
-df_prefs.drop("市区町村名", axis=1, inplace=True)
+    df_prefs = df3[flag].reset_index(drop=True)
 
-df_prefs.to_csv(pathlib.Path("data", "prefs.csv"), index=False, encoding="utf_8_sig")
+    df_prefs.drop("市区町村名", axis=1, inplace=True)
 
-# 市区町村
+    df_prefs.to_csv(
+        pathlib.Path("data", f"{auth}_prefs.csv"), index=False, encoding="utf_8_sig"
+    )
 
-df_cities = df3[~flag].reset_index(drop=True)
+    # 市区町村
 
-df_cities.to_csv(pathlib.Path("data", "cities.csv"), index=False, encoding="utf_8_sig")
+    df_cities = df3[~flag].reset_index(drop=True)
+
+    df_cities.to_csv(
+        pathlib.Path("data", f"{auth}_cities.csv"), index=False, encoding="utf_8_sig"
+    )
+
+    time.sleep(3)
+
+
+if __name__ == "__main__":
+
+    # ディレクトリ作成
+
+    pathlib.Path("data").mkdir(parents=True, exist_ok=True)
+
+    for m in musen:
+
+        api["IT"] = m["value"]
+
+        parm = urllib.parse.urlencode(api, encoding="shift-jis")
+
+        fetch_api(parm, m["auth"])
