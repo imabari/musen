@@ -124,11 +124,10 @@ if __name__ == "__main__":
 
         time.sleep(3)
 
-    df = pd.DataFrame(updated)
+    df = pd.DataFrame(updated, columns=["area", "update"])
 
     df.to_csv(
         pathlib.Path("data", "updated.csv"),
         index=False,
-        header=False,
         encoding="utf_8_sig",
     )
