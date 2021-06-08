@@ -26,7 +26,6 @@ api = {
     "NA": "楽天モバイル",
 }
 
-
 musen = [
     {"auth": "01_hokkaido", "value": "J"},
     {"auth": "02_tohoku", "value": "I"},
@@ -102,7 +101,7 @@ def fetch_api(parm, auth):
         pathlib.Path("data", f"{auth}_cities.csv"), index=False, encoding="utf_8_sig"
     )
 
-    time.sleep(3)
+    return update
 
 
 if __name__ == "__main__":
@@ -111,10 +110,25 @@ if __name__ == "__main__":
 
     pathlib.Path("data").mkdir(parents=True, exist_ok=True)
 
+    updated = []
+
     for m in musen:
 
         api["IT"] = m["value"]
 
         parm = urllib.parse.urlencode(api, encoding="shift-jis")
 
-        fetch_api(parm, m["auth"])
+        update = fetch_api(parm, m["auth"])
+
+        updated.append([m["auth"], update])
+
+        time.sleep(3)
+
+    df = pd.DataFrame(updated)
+
+    df.to_csv(
+        pathlib.Path("data", "updated.csv"),
+        index=False,
+        header=False,
+        encoding="utf_8_sig",
+    )
