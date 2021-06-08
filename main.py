@@ -90,13 +90,13 @@ def fetch_api(parm, auth):
 
     df2["市区町村名"] = df2["市区町村名"].mask(flag, "")
 
-    df2["更新日"] = update.isoformat()
+    # df2["更新日"] = update.isoformat()
 
     # 団体コードを付加
     df3 = (
         pd.merge(df2, df_code, on=["都道府県名", "市区町村名"], how="left")
         .reset_index(drop=True)
-        .reindex(["団体コード", "都道府県名", "市区町村名", "開設局数", "更新日"], axis=1)
+        .reindex(["団体コード", "都道府県名", "市区町村名", "開設局数"], axis=1)
     )
 
     df3["団体コード"] = df3["団体コード"].astype("Int64")
