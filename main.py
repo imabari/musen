@@ -40,6 +40,14 @@ musen = [
     {"auth": "11_okinawa", "value": "O"},
 ]
 
+# 団体コード
+df_code = pd.read_csv(
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vSseDxB5f3nS-YQ1NOkuFKZ7rTNfPLHqTKaSag-qaK25EWLcSL0klbFBZm1b6JDKGtHTk6iMUxsXpxt/pub?gid=0&single=true&output=csv",
+    dtype={"団体コード": int, "都道府県名": str, "郡名": str, "市区町村名": str},
+)
+
+df_code["市区町村名"] = df_code["郡名"].fillna("") + df_code["市区町村名"]
+df_code.drop("郡名", axis=1, inplace=True)
 
 def fetch_api(parm, auth):
 
@@ -95,7 +103,14 @@ def fetch_api(parm, auth):
 
     # 市区町村
 
-    df_cities = df3[~flag].reset_index(drop=True)
+    df_cities = (
+        pd.merge(df3[~flag], df_code, on=["都道府県名", "市区町村名"], how="left")
+        .reset_index(drop=True)
+        .reindex(["団体コード", "都道府県名", "市区町村名", "開設局数", "更新日"], axis=1)
+    )
+    df_cities["団体コード"] = df_cities["団体コード"].astype("Int64")
+
+    df_cities.sort_values("団体コード", inplace=True)
 
     df_cities.to_csv(
         pathlib.Path("data", f"{auth}_cities.csv"), index=False, encoding="utf_8_sig"
