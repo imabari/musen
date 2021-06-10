@@ -107,24 +107,6 @@ def fetch_api(parm, auth):
         pathlib.Path("data", f"{auth}.csv"), index=False, encoding="utf_8_sig"
     )
 
-    # 都道府県
-
-    df_prefs = df3[flag].reset_index(drop=True)
-
-    df_prefs.drop("市区町村名", axis=1, inplace=True)
-
-    df_prefs.to_csv(
-        pathlib.Path("data", f"{auth}_prefs.csv"), index=False, encoding="utf_8_sig"
-    )
-
-    # 市区町村
-
-    df_cities = df3[~flag].reset_index(drop=True)
-
-    df_cities.to_csv(
-        pathlib.Path("data", f"{auth}_cities.csv"), index=False, encoding="utf_8_sig"
-    )
-
     # 更新チェック
     df = pd.read_csv(f"https://imabari.github.io/musen/{auth}_cities.csv")
     update = (df_cities == df).all(axis=None)
