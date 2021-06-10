@@ -146,7 +146,7 @@ if __name__ == "__main__":
 
         latest, update = fetch_api(parm, m["auth"])
 
-        updated.append([m["auth"], latest, update])
+        updated.append([m["auth"], latest, int(update)])
 
         time.sleep(3)
 
