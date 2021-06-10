@@ -60,7 +60,7 @@ def fetch_api(parm, auth):
     data = list(cr)
 
     # 更新日
-    update = datetime.datetime.strptime(data[0][0], "%Y-%m-%d").date()
+    latest = datetime.datetime.strptime(data[0][0], "%Y-%m-%d").date()
 
     # データラングリング
 
@@ -90,7 +90,7 @@ def fetch_api(parm, auth):
 
     df2["市区町村名"] = df2["市区町村名"].mask(flag, "")
 
-    # df2["更新日"] = update.isoformat()
+    # df2["更新日"] = latest.isoformat()
 
     # 団体コードを付加
     df3 = (
@@ -123,7 +123,11 @@ def fetch_api(parm, auth):
         pathlib.Path("data", f"{auth}_cities.csv"), index=False, encoding="utf_8_sig"
     )
 
-    return update
+    # 更新チェック
+    df = pd.read_csv(f"https://imabari.github.io/musen/{auth}_cities.csv")
+    update = (df_cities == df).all(axis=None)
+    
+    return latest, not update
 
 
 if __name__ == "__main__":
@@ -140,13 +144,13 @@ if __name__ == "__main__":
 
         parm = urllib.parse.urlencode(api, encoding="shift-jis")
 
-        update = fetch_api(parm, m["auth"])
+        latest, update = fetch_api(parm, m["auth"])
 
-        updated.append([m["auth"], update])
+        updated.append([m["auth"], latest, update])
 
         time.sleep(3)
 
-    df = pd.DataFrame(updated, columns=["area", "update"])
+    df = pd.DataFrame(updated, columns=["area", "latest", "update"])
 
     df.to_csv(
         pathlib.Path("data", "updated.csv"),
