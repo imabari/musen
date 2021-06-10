@@ -1,10 +1,12 @@
-楽天モバイルの包括免許都道府県別・市区町村別一覧
+# 楽天モバイルの包括免許都道府県別・市区町村別一覧
 
-# 更新状況
+https://github.com/imabari/musen/tree/gh-pages
+
+## 更新状況
 
 + https://imabari.github.io/musen/updated.csv
 
-# 都道府県別
+## 都道府県別
 
 + https://imabari.github.io/musen/01_hokkaido_prefs.csv
 + https://imabari.github.io/musen/02_tohoku_prefs.csv
@@ -18,7 +20,7 @@
 + https://imabari.github.io/musen/10_kyushu_prefs.csv
 + https://imabari.github.io/musen/11_okinawa_prefs.csv
 
-# 市区町村別
+## 市区町村別
 
 + https://imabari.github.io/musen/01_hokkaido_cities.csv
 + https://imabari.github.io/musen/02_tohoku_cities.csv
