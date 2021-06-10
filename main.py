@@ -108,8 +108,8 @@ def fetch_api(parm, auth):
     )
 
     # 更新チェック
-    df = pd.read_csv(f"https://imabari.github.io/musen/{auth}_cities.csv")
-    update = (df_cities == df).all(axis=None)
+    df = pd.read_csv(f"https://imabari.github.io/musen/{auth}.csv").fillna("")
+    update = (df3 == df).all(axis=None)
     
     return latest, not update
 
