@@ -1,18 +1,6 @@
-# musen
+楽天モバイルの包括免許都道府県別・市区町村別一覧
 
-件数取得API/一覧取得APIのリクエスト条件一覧
-
-https://www.tele.soumu.go.jp/resource/j/musen/webapi/mw_req_conditions.pdf
-
-
-コード値一覧
-
-https://www.tele.soumu.go.jp/resource/j/musen/webapi/mw_code.pdf
-
-
-地方公共団体コード
-
-http://www.soumu.go.jp/denshijiti/code.html
+# 更新状況
 
 + https://imabari.github.io/musen/updated.csv
 
