@@ -103,7 +103,9 @@ def fetch_api(parm, auth):
 
     df3.sort_values("団体コード", inplace=True)
 
-    df3.to_csv(f"{auth}.csv", index=False, encoding="utf_8_sig")
+    df3.to_csv(
+        pathlib.Path("data", f"{auth}.csv"), index=False, encoding="utf_8_sig"
+    )
 
     # 都道府県
 
