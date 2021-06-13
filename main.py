@@ -50,6 +50,17 @@ df_code.drop("郡名", axis=1, inplace=True)
 
 df_code
 
+def fetch_file(url, dir="."):
+
+    p = pathlib.Path(dir, pathlib.PurePath(url).name)
+    p.parent.mkdir(parents=True, exist_ok=True)
+
+    r = requests.get(url)
+    r.raise_for_status()
+
+    with p.open(mode="wb") as fw:
+        fw.write(r.content)
+    return p
 
 def fetch_api(parm, auth):
 
@@ -108,7 +119,8 @@ def fetch_api(parm, auth):
     )
 
     # 更新チェック
-    df = pd.read_csv(f"https://imabari.github.io/musen/{auth}.csv").fillna("")
+    p_csv = fetch_file(f"https://imabari.github.io/musen/{auth}.csv", "before")
+    df = pd.read_csv(p_csv).fillna("")
     
     df = df.astype(df3.dtypes)
     update = df3.equals(df)
