@@ -119,7 +119,7 @@ def fetch_api(parm, auth):
     )
 
     # 更新チェック
-    p_csv = fetch_file(f"https://imabari.github.io/musen/{auth}.csv", "before")
+    p_csv = fetch_file(f"https://imabari.github.io/musen/{auth}.csv", "data/before")
     df = pd.read_csv(p_csv).fillna("")
     
     df = df.astype(df3.dtypes)
