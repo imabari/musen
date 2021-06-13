@@ -125,6 +125,11 @@ def fetch_api(parm, auth):
     df = df.astype(df3.dtypes)
     update = df3.equals(df)
     
+    # 同じファイルの場合はbeforeに戻す
+    
+    if update:
+        p_csv = fetch_file(f"https://imabari.github.io/musen/before/{auth}.csv", "data/before")
+    
     return latest, not update
 
 
