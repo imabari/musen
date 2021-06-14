@@ -132,7 +132,7 @@ def fetch_api(parm, auth):
         p_csv = fetch_file(f"https://imabari.github.io/musen/before/{auth}.csv", "data/before")
         df = pd.read_csv(p_csv).fillna("")
 
-    df4 = pd.merge(df3, df, on=["団体コード", "都道府県名", "市区町村名"], suffixes = ["_前回", "_今回"])
+    df4 = pd.merge(df, df3, on=["団体コード", "都道府県名", "市区町村名"], suffixes = ["_前回", "_今回"], how="right")
 
     df4["開設局数_今回"] = df4["開設局数_今回"].fillna(0).astype(int)
     df4["開設局数_前回"] = df4["開設局数_前回"].fillna(0).astype(int)
