@@ -8,14 +8,29 @@ https://github.com/imabari/musen/tree/gh-pages
 
 ## 通信局別
 
-+ https://imabari.github.io/musen/01_hokkaidos.csv
-+ https://imabari.github.io/musen/02_tohokus.csv
-+ https://imabari.github.io/musen/03_kantos.csv
-+ https://imabari.github.io/musen/04_shinetsus.csv
-+ https://imabari.github.io/musen/05_hokurikus.csv
-+ https://imabari.github.io/musen/06_tokais.csv
-+ https://imabari.github.io/musen/07_kinkis.csv
-+ https://imabari.github.io/musen/08_chugokus.csv
-+ https://imabari.github.io/musen/09_shikokus.csv
-+ https://imabari.github.io/musen/10_kyushus.csv
-+ https://imabari.github.io/musen/11_okinawas.csv
+### 最新
++ https://imabari.github.io/musen/01_hokkaido.csv
++ https://imabari.github.io/musen/02_tohoku.csv
++ https://imabari.github.io/musen/03_kanto.csv
++ https://imabari.github.io/musen/04_shinetsu.csv
++ https://imabari.github.io/musen/05_hokuriku.csv
++ https://imabari.github.io/musen/06_tokai.csv
++ https://imabari.github.io/musen/07_kinki.csv
++ https://imabari.github.io/musen/08_chugoku.csv
++ https://imabari.github.io/musen/09_shikoku.csv
++ https://imabari.github.io/musen/10_kyushu.csv
++ https://imabari.github.io/musen/11_okinawa.csv
+
+### 差分
++ https://imabari.github.io/musen/01_hokkaido_diff.csv
++ https://imabari.github.io/musen/02_tohoku_diff.csv
++ https://imabari.github.io/musen/03_kanto_diff.csv
++ https://imabari.github.io/musen/04_shinetsu_diff.csv
++ https://imabari.github.io/musen/05_hokuriku_diff.csv
++ https://imabari.github.io/musen/06_tokai_diff.csv
++ https://imabari.github.io/musen/07_kinki_diff.csv
++ https://imabari.github.io/musen/08_chugoku_diff.csv
++ https://imabari.github.io/musen/09_shikoku_diff.csv
++ https://imabari.github.io/musen/10_kyushu_diff.csv
++ https://imabari.github.io/musen/11_okinawa_diff.csv
+
