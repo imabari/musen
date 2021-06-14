@@ -125,10 +125,23 @@ def fetch_api(parm, auth):
     df = df.astype(df3.dtypes)
     update = df3.equals(df)
     
-    # 同じファイルの場合はbeforeに戻す
+    # 更新がない場合はbeforeに戻す
     
     if update:
+
         p_csv = fetch_file(f"https://imabari.github.io/musen/before/{auth}.csv", "data/before")
+        df = pd.read_csv(p_csv).fillna("")
+
+    df4 = pd.merge(df3, df, on=["団体コード", "都道府県名", "市区町村名"], suffixes = ["_前回", "_今回"])
+
+    df4["開設局数_今回"] = df4["開設局数_今回"].fillna(0).astype(int)
+    df4["開設局数_前回"] = df4["開設局数_前回"].fillna(0).astype(int)
+
+    df4["開設局数_差分"] = df4["開設局数_今回"] - df4["開設局数_前回"]
+
+    df4.to_csv(
+        pathlib.Path("data", f"{auth}_diff.csv"), index=False, encoding="utf_8_sig"
+    )
     
     return latest, not update
 
