@@ -34,3 +34,13 @@ https://github.com/imabari/musen/tree/gh-pages
 + https://imabari.github.io/musen/10_kyushu_diff.csv
 + https://imabari.github.io/musen/11_okinawa_diff.csv
 
+### 元データ
++ https://www.tele.soumu.go.jp/musen/SearchServlet?pageID=4&IT=J&DFCD=0000859517&DD=2&styleNumber=00
++ https://www.tele.soumu.go.jp/musen/SearchServlet?pageID=4&IT=I&DFCD=0001252434&DD=2&styleNumber=00
++ https://www.tele.soumu.go.jp/musen/SearchServlet?pageID=4&IT=A&DFCD=0004109061&DD=2&styleNumber=00
++ https://www.tele.soumu.go.jp/musen/SearchServlet?pageID=4&IT=B&DFCD=0000608544&DD=2&styleNumber=00
++ https://www.tele.soumu.go.jp/musen/SearchServlet?pageID=4&IT=C&DFCD=0001503255&DD=2&styleNumber=00
++ https://www.tele.soumu.go.jp/musen/SearchServlet?pageID=4&IT=D&DFCD=0000364420&DD=2&styleNumber=00
++ https://www.tele.soumu.go.jp/musen/SearchServlet?pageID=4&IT=E&DFCD=0001745556&DD=2&styleNumber=00
++ https://www.tele.soumu.go.jp/musen/SearchServlet?pageID=4&IT=G&DFCD=0000524258&DD=2&styleNumber=00
++ https://www.tele.soumu.go.jp/musen/SearchServlet?pageID=4&IT=O&DFCD=0000127475&DD=2&styleNumber=00
