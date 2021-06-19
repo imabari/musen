@@ -5,6 +5,7 @@ https://github.com/imabari/musen/tree/gh-pages
 ## 更新状況
 
 + https://imabari.github.io/musen/updated.csv
++ https://imabari.github.io/musen/00_prefs_diff.csv
 
 ## 通信局別
 
