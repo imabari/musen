@@ -204,9 +204,11 @@ if __name__ == "__main__":
         parm = urllib.parse.urlencode(api, encoding="shift-jis")
 
         latest, update, df = fetch_api(parm, m["auth"], m["prefs"])
+        
+        df["update"] = int(update)
 
         dfs.append(df)
-
+        
         updated.append([m["auth"], latest, int(update)])
 
         time.sleep(3)
