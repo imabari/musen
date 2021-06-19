@@ -27,17 +27,54 @@ api = {
 }
 
 musen = [
-    {"auth": "01_hokkaido", "value": "J"},
-    {"auth": "02_tohoku", "value": "I"},
-    {"auth": "03_kanto", "value": "A"},
-    {"auth": "04_shinetsu", "value": "B"},
-    {"auth": "05_hokuriku", "value": "D"},
-    {"auth": "06_tokai", "value": "C"},
-    {"auth": "07_kinki", "value": "E"},
-    {"auth": "08_chugoku", "value": "F"},
-    {"auth": "09_shikoku", "value": "G"},
-    {"auth": "10_kyushu", "value": "H"},
-    {"auth": "11_okinawa", "value": "O"},
+    {"auth": "01_hokkaido", "value": "J", "prefs": [10006]},
+    {
+        "auth": "02_tohoku",
+        "value": "I",
+        "prefs": [20001, 30007, 40002, 50008, 60003, 70009],
+    },
+    {
+        "auth": "03_kanto",
+        "value": "A",
+        "prefs": [
+            80004,
+            90000,
+            100005,
+            110001,
+            120006,
+            130001,
+            140007,
+            190004,
+        ],
+    },
+    {"auth": "04_shinetsu", "value": "B", "prefs": [150002, 200000]},
+    {"auth": "05_hokuriku", "value": "D", "prefs": [160008, 170003, 180009]},
+    {
+        "auth": "06_tokai",
+        "value": "C",
+        "prefs": [210005, 220001, 230006, 240001],
+    },
+    {
+        "auth": "07_kinki",
+        "value": "E",
+        "prefs": [250007, 260002, 270008, 280003, 290009, 300004],
+    },
+    {
+        "auth": "08_chugoku",
+        "value": "F",
+        "prefs": [310000, 320005, 330001, 340006, 350001],
+    },
+    {
+        "auth": "09_shikoku",
+        "value": "G",
+        "prefs": [360007, 370002, 380008, 390003],
+    },
+    {
+        "auth": "10_kyushu",
+        "value": "H",
+        "prefs": [400009, 410004, 420000, 430005, 440001, 450006, 460001],
+    },
+    {"auth": "11_okinawa", "value": "O", "prefs": [470007]},
 ]
 
 df_code = pd.read_csv(
@@ -49,6 +86,7 @@ df_code["市区町村名"] = df_code["郡名"].fillna("") + df_code["市区町�
 df_code.drop("郡名", axis=1, inplace=True)
 
 df_code
+
 
 def fetch_file(url, dir="."):
 
@@ -62,7 +100,8 @@ def fetch_file(url, dir="."):
         fw.write(r.content)
     return p
 
-def fetch_api(parm, auth):
+
+def fetch_api(parm, auth, prefs):
 
     r = requests.get("https://www.tele.soumu.go.jp/musen/list", parm)
     r.raise_for_status()
@@ -114,25 +153,27 @@ def fetch_api(parm, auth):
 
     df3.sort_values("団体コード", inplace=True)
 
-    df3.to_csv(
-        pathlib.Path("data", f"{auth}.csv"), index=False, encoding="utf_8_sig"
-    )
+    df3.to_csv(pathlib.Path("data", f"{auth}.csv"), index=False, encoding="utf_8_sig")
 
     # 更新チェック
     p_csv = fetch_file(f"https://imabari.github.io/musen/{auth}.csv", "data/before")
     df = pd.read_csv(p_csv).fillna("")
-    
+
     df = df.astype(df3.dtypes)
     update = df3.equals(df)
-    
+
     # 更新がない場合はbeforeに戻す
-    
+
     if update:
 
-        p_csv = fetch_file(f"https://imabari.github.io/musen/before/{auth}.csv", "data/before")
+        p_csv = fetch_file(
+            f"https://imabari.github.io/musen/before/{auth}.csv", "data/before"
+        )
         df = pd.read_csv(p_csv).fillna("")
 
-    df4 = pd.merge(df, df3, on=["団体コード", "都道府県名", "市区町村名"], suffixes = ["_前回", "_今回"], how="right")
+    df4 = pd.merge(
+        df, df3, on=["団体コード", "都道府県名", "市区町村名"], suffixes=["_前回", "_今回"], how="right"
+    )
 
     df4["開設局数_今回"] = df4["開設局数_今回"].fillna(0).astype(int)
     df4["開設局数_前回"] = df4["開設局数_前回"].fillna(0).astype(int)
@@ -142,9 +183,10 @@ def fetch_api(parm, auth):
     df4.to_csv(
         pathlib.Path("data", f"{auth}_diff.csv"), index=False, encoding="utf_8_sig"
     )
-    
-    return latest, not update
 
+    df5 = df4[df4["団体コード"].isin(prefs)]
+
+    return latest, not update, df5
 
 if __name__ == "__main__":
 
@@ -152,6 +194,7 @@ if __name__ == "__main__":
 
     pathlib.Path("data").mkdir(parents=True, exist_ok=True)
 
+    dfs = []
     updated = []
 
     for m in musen:
@@ -160,15 +203,25 @@ if __name__ == "__main__":
 
         parm = urllib.parse.urlencode(api, encoding="shift-jis")
 
-        latest, update = fetch_api(parm, m["auth"])
+        latest, update, df = fetch_api(parm, m["auth"], m["prefs"])
+
+        dfs.append(df)
 
         updated.append([m["auth"], latest, int(update)])
 
         time.sleep(3)
 
-    df = pd.DataFrame(updated, columns=["area", "latest", "update"])
+    df1 = pd.concat(dfs).sort_values("団体コード").reset_index(drop=True)
 
-    df.to_csv(
+    df1.to_csv(
+        pathlib.Path("data", "prefs.csv"),
+        index=False,
+        encoding="utf_8_sig",
+    )
+
+    df2 = pd.DataFrame(updated, columns=["area", "latest", "update"])
+
+    df2.to_csv(
         pathlib.Path("data", "updated.csv"),
         index=False,
         encoding="utf_8_sig",
