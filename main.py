@@ -214,7 +214,7 @@ if __name__ == "__main__":
     df1 = pd.concat(dfs).sort_values("団体コード").reset_index(drop=True)
 
     df1.to_csv(
-        pathlib.Path("data", "prefs_diff.csv"),
+        pathlib.Path("data", "00_prefs_diff.csv"),
         index=False,
         encoding="utf_8_sig",
     )
